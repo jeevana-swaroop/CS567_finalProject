@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskManagementSystem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project567</a> &gt; <a href="index.source.html" class="el_package">com.example.project</a> &gt; <span class="el_source">TaskManagementSystem.java</span></div><h1>TaskManagementSystem.java</h1><pre class="source lang-java linenums">package com.example.project;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+<span class="fc" id="L7">public class TaskManagementSystem {</span>
+<span class="fc" id="L8">    private List&lt;Task&gt; tasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L9">    private List&lt;User&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L10">    private int taskIdCounter = 1;</span>
+
+    public void addUser(String name, String role) {
+<span class="pc bpc" id="L13" title="3 of 8 branches missed.">        if (name == null || name.isEmpty() || role == null || role.isEmpty()) {</span>
+<span class="fc" id="L14">            throw new IllegalArgumentException(&quot;User name and role cannot be empty&quot;);</span>
+        }
+<span class="fc" id="L16">        users.add(new User(name, role));</span>
+<span class="fc" id="L17">    }</span>
+
+    public int createTask(String description, String assignedTo, int priority) {
+<span class="pc bpc" id="L20" title="2 of 4 branches missed.">        if (description == null || description.isEmpty()) {</span>
+<span class="nc" id="L21">            throw new IllegalArgumentException(&quot;Task description cannot be empty&quot;);</span>
+        }
+<span class="fc" id="L23">        Optional&lt;User&gt; userOptional = users.stream()</span>
+<span class="fc" id="L24">                .filter(user -&gt; user.getName().equals(assignedTo))</span>
+<span class="fc" id="L25">                .findFirst();</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (!userOptional.isPresent()) {</span>
+<span class="fc" id="L27">            throw new IllegalArgumentException(&quot;Assigned user not found&quot;);</span>
+        }
+<span class="fc" id="L29">        Task task = new Task(taskIdCounter++, description, assignedTo, TaskStatus.PENDING, priority);</span>
+<span class="fc" id="L30">        tasks.add(task);</span>
+<span class="fc" id="L31">        return task.getId();</span>
+    }
+
+    public void updateTaskStatus(int taskId, TaskStatus status) {
+<span class="fc" id="L35">        Task task = getTask(taskId);</span>
+<span class="fc" id="L36">        task.setStatus(status);</span>
+<span class="fc" id="L37">    }</span>
+
+    public void updateTaskPriority(int taskId, int priority) {
+<span class="fc" id="L40">        Task task = getTask(taskId);</span>
+<span class="fc" id="L41">        task.setPriority(priority);</span>
+<span class="fc" id="L42">    }</span>
+
+    public List&lt;Task&gt; listTasksByPriority() {
+<span class="fc" id="L45">        tasks.sort((t1, t2) -&gt; Integer.compare(t2.getPriority(), t1.getPriority()));</span>
+<span class="fc" id="L46">        return tasks;</span>
+    }
+
+    public Task getTask(int taskId) {
+<span class="fc" id="L50">        return tasks.stream()</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">                .filter(task -&gt; task.getId() == taskId)</span>
+<span class="fc" id="L52">                .findFirst()</span>
+<span class="fc" id="L53">                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Task not found&quot;));</span>
+    }
+
+    public List&lt;Task&gt; listTasks() {
+<span class="fc" id="L57">        return new ArrayList&lt;&gt;(tasks);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
